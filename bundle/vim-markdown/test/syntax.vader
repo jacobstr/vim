@@ -1,0 +1,113 @@
+Given mkd (bold);
+**bold** not bold
+
+Execute (SyntaxOf(pattern)):
+  AssertEqual SyntaxOf('b'), 'htmlBold'
+
+Given mkd (italic);
+*italic*
+
+Execute (SyntaxOf(pattern)):
+  AssertEqual SyntaxOf('i'), 'htmlItalic'
+
+# Links
+
+Given mkd;
+[a](b)
+
+Execute (link with title):
+  AssertEqual SyntaxOf('a'), 'mkdLink'
+  AssertEqual SyntaxOf('b'), 'mkdURL'
+
+Given mkd;
+(a)
+
+Execute (parenthesis not in link):
+  AssertNotEqual SyntaxOf('a'), 'mkdLink'
+
+Given mkd;
+[a](b) c [d](e)
+
+Execute (multiple links on a line):
+  AssertEqual SyntaxOf('c'), ''
+
+# Math
+
+Given mkd;
+a $x$ b
+c $$y$$ d
+\$e\$
+\$\$f\$\$
+
+Execute (math):
+  AssertNotEqual SyntaxOf('x'), 'mkdMath'
+  AssertNotEqual SyntaxOf('y'), 'mkdMath'
+  let g:vim_markdown_math=1
+  syn off | syn on
+  AssertNotEqual SyntaxOf('a'), 'mkdMath'
+  AssertNotEqual SyntaxOf('b'), 'mkdMath'
+  AssertNotEqual SyntaxOf('c'), 'mkdMath'
+  AssertNotEqual SyntaxOf('d'), 'mkdMath'
+  AssertNotEqual SyntaxOf('e'), 'mkdMath'
+  AssertNotEqual SyntaxOf('f'), 'mkdMath'
+  AssertEqual SyntaxOf('x'), 'mkdMath'
+  AssertEqual SyntaxOf('y'), 'mkdMath'
+  let g:vim_markdown_math=0
+  syn off | syn on
+  AssertNotEqual SyntaxOf('x'), 'mkdMath'
+  AssertNotEqual SyntaxOf('y'), 'mkdMath'
+
+Given mkd;
+a
+
+$
+b
+$
+
+c
+
+Execute (multiline math):
+  let g:vim_markdown_math=1
+  syn off | syn on
+  AssertNotEqual SyntaxOf('a'), 'mkdMath'
+  AssertEqual SyntaxOf('b'), 'mkdMath'
+  AssertNotEqual SyntaxOf('c'), 'mkdMath'
+
+# YAML frontmatter
+
+Given mkd;
+---
+a: b
+---
+
+Execute (YAML frontmatter is controlled by the option):
+  AssertNotEqual SyntaxOf('a'), 'yamlBlockMappingKey'
+  let g:vim_markdown_frontmatter=1
+  syn off | syn on
+  AssertEqual SyntaxOf('a'), 'yamlBlockMappingKey'
+  let g:vim_markdown_frontmatter=0
+  syn off | syn on
+  AssertNotEqual SyntaxOf('a'), 'yamlBlockMappingKey'
+
+Given mkd;
+
+---
+a: b
+---
+
+Execute (YAML frontmatter only works if it's the first thing in the file):
+  let g:vim_markdown_frontmatter=1
+  syn off | syn on
+  AssertNotEqual SyntaxOf('a'), 'yamlBlockMappingKey'
+
+Given mkd;
+---
+a: b
+---
+
+---
+
+Execute (rules are not mistaken by YAML frontmatter delimiters):
+  let g:vim_markdown_frontmatter=1
+  syn off | syn on
+  AssertEqual SyntaxAt(5, 1), 'mkdRule'

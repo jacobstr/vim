@@ -1,0 +1,41 @@
+snippet logd
+\Logger::at(__FILE__,__LINE__)->debug(${1});
+endsnippet
+
+snippet delv
+\Belt\Probe::delve(${1});
+endsnippet
+
+snippet deld
+\Belt\Probe::stackDump();
+endsnippet
+
+snippet trace
+\Belt\Trace::debug(${1});
+endsnippet
+
+snippet dump
+error_log(date('c').'|'.__FILE__.'|'.__LINE__.'|'.\Dumpling\Dumpling::d(${1}));
+endsnippet
+
+snippet delo
+error_log(date('c').'|'.__FILE__.'|'.__LINE__.'|'.print_d(${1}));
+endsnippet
+
+snippet delr
+error_log(date('c').'|'.__FILE__.'|'.__LINE__.'|'.print_r(${1}, true));
+endsnippet
+
+snippet delf
+error_log(date('c').'|'.__FUNCITON__.'|'.__FILE__.'|'.__LINE__.'|'.print_d(${1}));
+endsnippet
+
+snippet exi
+error_log(date('c').'|'.__FILE__.'|'.__LINE__.'|EXIT()');exit();
+endsnippet
+
+snippet noc
+Notches::Mark("${1}")
+endsnippet
+
+# :vim:ft=snippets:

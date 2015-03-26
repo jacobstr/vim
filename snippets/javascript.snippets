@@ -1,0 +1,8 @@
+snippet rain
+	console.log(__filename, `line(".")`.green, "${1}".rainbow);
+
+snippet rainm
+	console.log(__filename, `line(".")`.green, "${1}".rainbow, ${2});
+
+snippet raini
+	console.log(__filename, `line(".")`.green, require('util').inspect(${1}, {depth: ${2:3}, colors:true}));
